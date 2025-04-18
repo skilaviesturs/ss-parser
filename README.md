@@ -1,0 +1,1 @@
+python3 -c "from web_utils import fetch_and_parse; from listing_analyzer import analyze_listing, extract_listing_data; url='https://www.ss.lv/msg/lv/real-estate/flats/riga/shkirotava/iklgn.html'; soup=fetch_and_parse(url); print(extract_listing_data(soup)); print('MATCHES:', analyze_listing(soup))"
