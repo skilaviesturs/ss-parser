@@ -19,6 +19,7 @@ class Entry(Base):
     floor = Column(Integer, default=None)
     area = Column(Float, default=None)
     price = Column(Float, default=None)
+    price_m2 = Column(Float, default=None)
 
 engine = create_engine(DB_PATH)
 Base.metadata.create_all(engine)
@@ -39,7 +40,8 @@ def save_entries_to_db(entries):
                 rooms=entry.get('rooms'),
                 floor=entry.get('floor'),
                 area=entry.get('area'),
-                price=entry.get('price')
+                price=entry.get('price'),
+                price_m2=entry.get('price_m2')
             )
             session.add(db_entry)
     session.commit()

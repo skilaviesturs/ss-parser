@@ -36,6 +36,7 @@ def main():
             entry.floor = data.get('floor')
             entry.area = data.get('area')
             entry.price = data.get('price')
+            entry.price_m2 = data.get('price_m2')
             if is_match:
                 notifier.notify_ntfy(entry.title, entry.link)
                 match_count += 1

@@ -47,8 +47,19 @@ def extract_listing_data(soup):
                 pass
         elif 'Cena' in label:
             try:
-                price_str = value.split()[0].replace('€', '').replace(' ', '').replace(',', '')
-                data['price'] = float(price_str)
+                # Extract price and price per m2 using regex
+                import re
+                price_match = re.search(r'([\d\s]+)\s*€', value)
+                price_m2_match = re.search(r'\(([^€]+)€/m²\)', value)
+                if price_match:
+                    price_str = price_match.group(1).replace(' ', '').replace(',', '')
+                    data['price'] = float(price_str)
+                if price_m2_match:
+                    price_m2_str = price_m2_match.group(1).replace(' ', '').replace(',', '.')
+                    try:
+                        data['price_m2'] = float(price_m2_str)
+                    except Exception:
+                        pass
             except Exception:
                 pass
     return data
