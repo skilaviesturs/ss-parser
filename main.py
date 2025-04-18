@@ -26,9 +26,16 @@ def main():
     for entry in unprocessed:
         try:
             soup = web_utils.fetch_and_parse(entry.link)
-            is_match = listing_analyzer.analyze_listing(soup)
+            is_match, data = listing_analyzer.analyze_listing(soup)
             entry.is_match = is_match
             entry.is_processed = True
+            # Update all extracted fields
+            entry.location = data.get('location')
+            entry.building_type = data.get('building_type')
+            entry.rooms = data.get('rooms')
+            entry.floor = data.get('floor')
+            entry.area = data.get('area')
+            entry.price = data.get('price')
             if is_match:
                 notifier.notify_ntfy(entry.title, entry.link)
                 match_count += 1

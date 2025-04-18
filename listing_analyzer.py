@@ -81,4 +81,5 @@ def matches_search_criteria(data):
 
 def analyze_listing(soup):
     data = extract_listing_data(soup)
-    return matches_search_criteria(data)
+    is_match = matches_search_criteria(data)
+    return is_match, data
