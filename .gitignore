@@ -2,4 +2,4 @@ env/
 __pycache__/
 *.pyc
 ss_entries.db
-config.py
+.env
