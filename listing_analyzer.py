@@ -52,7 +52,9 @@ def extract_listing_data(soup):
                 pass
         elif 'Cena' in label:
             try:
-                data['price'] = float(value.split()[0].replace(',', '').replace('€', ''))
+                # Remove euro sign, spaces (thousands separator), and commas, then convert to float
+                price_str = value.split()[0].replace('€', '').replace(' ', '').replace(',', '')
+                data['price'] = float(price_str)
             except Exception:
                 pass
     return data
