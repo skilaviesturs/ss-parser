@@ -78,8 +78,9 @@ def matches_search_criteria(data):
         return False
     if SEARCH_PROPERTIES:
         found = False
+        text_lower = data['text'].lower() if data['text'] else ''
         for prop in SEARCH_PROPERTIES:
-            if prop.lower() in data['text'].lower():
+            if prop.lower() in text_lower:
                 found = True
                 break
         if not found:
