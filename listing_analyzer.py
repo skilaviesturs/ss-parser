@@ -53,7 +53,7 @@ def extract_listing_data(soup):
                 price_m2_match = re.search(r'\(([^€]+)€/m²\)', value)
                 if price_match:
                     price_str = price_match.group(1).replace(' ', '').replace(',', '')
-                    data['price'] = float(price_str)
+                    data['price'] = int(float(price_str))
                 if price_m2_match:
                     price_m2_str = price_m2_match.group(1).replace(' ', '').replace(',', '.')
                     try:

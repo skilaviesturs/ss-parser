@@ -18,7 +18,7 @@ class Entry(Base):
     rooms = Column(Integer, default=None)
     floor = Column(Integer, default=None)
     area = Column(Float, default=None)
-    price = Column(Float, default=None)
+    price = Column(Integer, default=None)
     price_m2 = Column(Float, default=None)
 
 engine = create_engine(DB_PATH)
