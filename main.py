@@ -1,5 +1,3 @@
-# This script fetches the RSS feed from ss.lv and parses it to extract relevant information.
-
 import ss_feed
 from db_utils import save_entries_to_db, Session, Entry
 from config import SS_RSS_URL
@@ -9,7 +7,6 @@ import notifier
 
 def main():
     entries = ss_feed.fetch_ss_rss_feed(SS_RSS_URL)
-    # Save entries and count new ones
     session = Session()
     new_count = 0
     for entry in entries:
@@ -24,7 +21,6 @@ def main():
             session.add(db_entry)
             new_count += 1
     session.commit()
-    # Analyze unprocessed entries
     unprocessed = session.query(Entry).filter_by(is_processed=False).all()
     match_count = 0
     for entry in unprocessed:
@@ -37,7 +33,7 @@ def main():
                 notifier.notify_ntfy(entry.title, entry.link)
                 match_count += 1
         except Exception:
-            pass  # Silently ignore errors
+            pass
     session.commit()
     session.close()
     print(f"New entries added: {new_count}")

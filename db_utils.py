@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -12,7 +12,13 @@ class Entry(Base):
     link = Column(String)
     published = Column(String)
     is_processed = Column(Boolean, default=False)
-    is_match = Column(Boolean, default=None)  # New column for match status
+    is_match = Column(Boolean, default=None)
+    location = Column(String, default=None)
+    building_type = Column(String, default=None)
+    rooms = Column(Integer, default=None)
+    floor = Column(Integer, default=None)
+    area = Column(Float, default=None)
+    price = Column(Float, default=None)
 
 engine = create_engine(DB_PATH)
 Base.metadata.create_all(engine)
@@ -27,7 +33,13 @@ def save_entries_to_db(entries):
                 title=entry.get('title'),
                 link=entry.get('link'),
                 published=entry.get('published'),
-                is_processed=False
+                is_processed=False,
+                location=entry.get('location'),
+                building_type=entry.get('building_type'),
+                rooms=entry.get('rooms'),
+                floor=entry.get('floor'),
+                area=entry.get('area'),
+                price=entry.get('price')
             )
             session.add(db_entry)
     session.commit()

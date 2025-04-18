@@ -2,9 +2,6 @@ import requests
 import config
 
 def notify_ntfy(title, link):
-    """
-    Send a notification to the NTFY server with the entity title and link.
-    """
     url = config.NTFY_URL.rstrip('/')
     topic = 'ss-matches'
     full_url = f"{url}/{topic}"

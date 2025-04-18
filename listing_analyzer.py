@@ -10,10 +10,6 @@ SEARCH_PROPERTIES = config.PROPERTIES
 
 
 def extract_listing_data(soup):
-    """
-    Extracts relevant fields from a parsed listing BeautifulSoup object.
-    Returns a dict with keys: location, building_type, rooms, floor, area, price, text.
-    """
     data = {
         'location': None,
         'building_type': None,
@@ -23,7 +19,6 @@ def extract_listing_data(soup):
         'price': None,
         'text': soup.get_text(separator=' ', strip=True)
     }
-    # Example extraction logic (update selectors as needed for ss.lv)
     for row in soup.find_all('tr'):
         cells = row.find_all('td')
         if len(cells) < 2:
@@ -52,7 +47,6 @@ def extract_listing_data(soup):
                 pass
         elif 'Cena' in label:
             try:
-                # Remove euro sign, spaces (thousands separator), and commas, then convert to float
                 price_str = value.split()[0].replace('€', '').replace(' ', '').replace(',', '')
                 data['price'] = float(price_str)
             except Exception:
@@ -61,9 +55,6 @@ def extract_listing_data(soup):
 
 
 def matches_search_criteria(data):
-    """
-    Returns True if the listing data matches the search criteria from config.
-    """
     if SEARCH_LOCATION and data['location'] not in SEARCH_LOCATION:
         return False
     if SEARCH_BUILDING_TYPE and data['building_type'] not in SEARCH_BUILDING_TYPE:
@@ -89,8 +80,5 @@ def matches_search_criteria(data):
 
 
 def analyze_listing(soup):
-    """
-    Analyze a parsed listing soup and return True if it matches search criteria.
-    """
     data = extract_listing_data(soup)
     return matches_search_criteria(data)

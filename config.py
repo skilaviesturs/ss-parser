@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env file if present
 load_dotenv()
 
 def get_list_from_env(var_name):
