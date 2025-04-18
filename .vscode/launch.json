@@ -4,12 +4,21 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
             "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug test_analyzer with SS.lv URL",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/test_analyzer.py",
+            "args": [
+                "https://www.ss.lv/msg/lv/real-estate/flats/riga/grizinkalns/bpnmeh.html"
+            ],
             "console": "integratedTerminal"
         }
     ]
