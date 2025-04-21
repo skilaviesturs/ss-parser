@@ -15,7 +15,12 @@ def get_int_from_env(var_name, default=0):
     except ValueError:
         return default
 
-SS_RSS_URL = os.getenv('SS_RSS_URL', '')
+def get_database_path():
+    # Default to a file in the data directory
+    return 'sqlite:///data/ss_entries.db'
+
+# Ensure the URL does not have extra quotes
+SS_RSS_URL = os.getenv('SS_RSS_URL', '').strip('"')
 LOCATION = get_list_from_env('LOCATION')
 BUILDING_TYPE = get_list_from_env('BUILDING_TYPE')
 ROOMS = get_int_from_env('ROOMS')
@@ -26,3 +31,4 @@ PROPERTIES = get_list_from_env('PROPERTIES')
 NTFY_URL = os.getenv('NTFY_URL', '')
 NTFY_USERNAME = os.getenv('NTFY_USERNAME', '')
 NTFY_PASSWORD = os.getenv('NTFY_PASSWORD', '')
+DATABASE_PATH = get_database_path()

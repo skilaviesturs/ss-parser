@@ -18,10 +18,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Set the environment variable for the database path
-ENV DATABASE_PATH=/data/ss_entries.db
+ENV DATABASE_PATH=sqlite:///data/ss_entries.db
 
-# Ensure the database file is created in the volume
-RUN touch /data/ss_entries.db
+# Ensure the /data directory exists and the database file is not overwritten if it already exists
+RUN mkdir -p /data && [ ! -f /data/ss_entries.db ] && touch /data/ss_entries.db || true
 
 # Expose port if needed (uncomment if your app serves HTTP)
 # EXPOSE 8000

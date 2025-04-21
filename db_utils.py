@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from config import DATABASE_PATH
 
-DB_PATH = 'sqlite:///ss_entries.db'
 Base = declarative_base()
 
 class Entry(Base):
@@ -21,7 +21,8 @@ class Entry(Base):
     price = Column(Integer, default=None)
     price_m2 = Column(Float, default=None)
 
-engine = create_engine(DB_PATH)
+# Use DATABASE_PATH from config
+engine = create_engine(DATABASE_PATH)
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 

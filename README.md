@@ -41,11 +41,13 @@ Edit `.env` to set your RSS feed URL, search parameters, and NTFY credentials. E
 python main.py
 ```
 
+By default, the database file will be created at `data/ss_entries.db` inside your project directory. You can change this location by editing the `DATABASE_PATH` variable in your `.env` file.
+
 ### 6. (Optional) Run with Docker
 You can also build and run the project using Docker. To ensure the database (`ss_entries.db`) is persistent, map a volume to the `/data` directory inside the container:
 
 ```
-docker build -t ss-parser .
+docker build --no-cache -t ss-parser .
 docker run --env-file .env -v $(pwd)/data:/data ss-parser
 ```
 

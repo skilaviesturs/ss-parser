@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 ss_entries.db
 .env
+data/*.db
