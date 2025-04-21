@@ -6,10 +6,9 @@ def notify_ntfy(title, link):
     url = config.NTFY_URL.rstrip('/')
     topic = 'ss-matches'
     full_url = f"{url}/{topic}"
-    safe_title = urllib.parse.quote(title, safe='')  # Ensure title is safe for POST request
     message = f"{title}\n{link}"
     auth = (config.NTFY_USERNAME, config.NTFY_PASSWORD) if config.NTFY_USERNAME and config.NTFY_PASSWORD else None
-    headers = {'Title': safe_title}
+    headers = {}  # Removed safe_title header
     response = requests.post(full_url, data=message.encode('utf-8'), headers=headers, auth=auth)
     response.raise_for_status()
     return response.status_code
