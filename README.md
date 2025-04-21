@@ -36,6 +36,8 @@ cp .env.dist .env
 ```
 Edit `.env` to set your RSS feed URL, search parameters, and NTFY credentials. Each parameter is explained in the `.env.dist` file.
 
+> **Note:** When setting the `DATABASE_PATH` for SQLite, use four forward slashes after `sqlite:` (e.g. `sqlite:////data/ss_entries.db`) to specify an absolute path. Using three slashes (e.g. `sqlite:///data/ss_entries.db`) will create the database relative to the working directory inside the container or script.
+
 ### 5. Run the parser
 ```
 python main.py
