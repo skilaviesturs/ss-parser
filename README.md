@@ -42,11 +42,29 @@ python main.py
 ```
 
 ### 6. (Optional) Run with Docker
-You can also build and run the project using Docker:
+You can also build and run the project using Docker. To ensure the database (`ss_entries.db`) is persistent, map a volume to the `/data` directory inside the container:
+
 ```
 docker build -t ss-parser .
-docker run --env-file .env ss-parser
+docker run --env-file .env -v $(pwd)/data:/data ss-parser
 ```
+
+This will store the `ss_entries.db` file in the `data` directory of your project folder, ensuring that the database persists even if the container is removed.
+
+### 7. (Optional) Run with Docker Compose
+You can also use Docker Compose to simplify running the application with a persistent database. The `docker-compose.yml` file is already configured for this purpose:
+
+To build and start the application:
+```
+docker-compose up --build
+```
+
+To start the application without rebuilding:
+```
+docker-compose up
+```
+
+This will build the Docker image (if needed), start the container, and ensure the `ss_entries.db` file is stored in the `data` directory of your project folder, making the database persistent.
 
 ## Notes
 - All configuration is done via the `.env` file. See `.env.dist` for parameter descriptions and examples.

@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  ss-parser:
+    build:
+      context: .
+    container_name: ss-parser
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+    command: python main.py

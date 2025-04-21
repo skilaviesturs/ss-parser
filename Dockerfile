@@ -7,12 +7,21 @@ WORKDIR /app
 # Install build dependencies for pip packages (if needed)
 RUN apk add --no-cache gcc musl-dev libffi-dev
 
+# Add a volume to persist the SQLite database
+VOLUME /data
+
 # Copy requirements and install dependencies
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . .
+
+# Set the environment variable for the database path
+ENV DATABASE_PATH=/data/ss_entries.db
+
+# Ensure the database file is created in the volume
+RUN touch /data/ss_entries.db
 
 # Expose port if needed (uncomment if your app serves HTTP)
 # EXPOSE 8000
