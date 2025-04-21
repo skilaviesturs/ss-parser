@@ -9,13 +9,19 @@ def get_list_from_env(var_name):
         return []
     return [v.strip() for v in value.split(',') if v.strip()]
 
+def get_int_from_env(var_name, default=0):
+    try:
+        return int(os.getenv(var_name, default))
+    except ValueError:
+        return default
+
 SS_RSS_URL = os.getenv('SS_RSS_URL', '')
 LOCATION = get_list_from_env('LOCATION')
 BUILDING_TYPE = get_list_from_env('BUILDING_TYPE')
-ROOMS = os.getenv('ROOMS', '')
-FLOOR = os.getenv('FLOOR', '')
-AREA = os.getenv('AREA', '')
-PRICE = os.getenv('PRICE', '')
+ROOMS = get_int_from_env('ROOMS')
+FLOOR = get_int_from_env('FLOOR')
+AREA = get_int_from_env('AREA')
+PRICE = get_int_from_env('PRICE')
 PROPERTIES = get_list_from_env('PROPERTIES')
 NTFY_URL = os.getenv('NTFY_URL', '')
 NTFY_USERNAME = os.getenv('NTFY_USERNAME', '')

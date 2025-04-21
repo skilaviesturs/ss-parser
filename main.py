@@ -4,6 +4,7 @@ from config import SS_RSS_URL
 import web_utils
 import listing_analyzer
 import notifier
+from notifier import generate_title
 
 def main():
     entries = ss_feed.fetch_ss_rss_feed(SS_RSS_URL)
@@ -38,7 +39,8 @@ def main():
             entry.price = data.get('price')
             entry.price_m2 = data.get('price_m2')
             if is_match:
-                notifier.notify_ntfy(entry.title, entry.link)
+                title = generate_title(data)
+                notifier.notify_ntfy(title, entry.link)
                 match_count += 1
         except Exception:
             pass

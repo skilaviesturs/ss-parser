@@ -1,14 +1,5 @@
 import config
 
-SEARCH_LOCATION = config.LOCATION
-SEARCH_BUILDING_TYPE = config.BUILDING_TYPE
-SEARCH_ROOMS = config.ROOMS
-SEARCH_FLOOR = config.FLOOR
-SEARCH_AREA = config.AREA
-SEARCH_PRICE = config.PRICE
-SEARCH_PROPERTIES = config.PROPERTIES
-
-
 def extract_listing_data(soup):
     data = {
         'location': None,
@@ -27,7 +18,7 @@ def extract_listing_data(soup):
         value = cells[1].get_text(strip=True)
         if 'Rajons' in label:
             data['location'] = value
-        elif 'Mājas tips' in label:
+        elif 'Sērija' in label:  # Updated to look for "Sērija" instead of "Mājas tips"
             data['building_type'] = value
         elif 'Istabas' in label:
             try:
@@ -66,22 +57,22 @@ def extract_listing_data(soup):
 
 
 def matches_search_criteria(data):
-    if SEARCH_LOCATION and data['location'] not in SEARCH_LOCATION:
+    if config.LOCATION and data['location'] not in config.LOCATION:
         return False
-    if SEARCH_BUILDING_TYPE and data['building_type'] not in SEARCH_BUILDING_TYPE:
+    if config.BUILDING_TYPE and data['building_type'] not in config.BUILDING_TYPE:
         return False
-    if SEARCH_ROOMS and (data['rooms'] is None or data['rooms'] < int(SEARCH_ROOMS[0])):
+    if config.ROOMS and (data['rooms'] is None or data['rooms'] < config.ROOMS):
         return False
-    if SEARCH_FLOOR and (data['floor'] is None or data['floor'] < int(SEARCH_FLOOR[0])):
+    if config.FLOOR and (data['floor'] is None or data['floor'] < config.FLOOR):
         return False
-    if SEARCH_AREA and (data['area'] is None or data['area'] < float(SEARCH_AREA[0])):
+    if config.AREA and (data['area'] is None or data['area'] < config.AREA):
         return False
-    if SEARCH_PRICE and (data['price'] is None or data['price'] > float(SEARCH_PRICE[0])):
+    if config.PRICE and (data['price'] is None or data['price'] > config.PRICE):
         return False
-    if SEARCH_PROPERTIES:
+    if config.PROPERTIES:
         found = False
         text_lower = data['text'].lower() if data['text'] else ''
-        for prop in SEARCH_PROPERTIES:
+        for prop in config.PROPERTIES:
             if prop.lower() in text_lower:
                 found = True
                 break
