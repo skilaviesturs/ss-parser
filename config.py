@@ -16,8 +16,8 @@ def get_int_from_env(var_name, default=0):
         return default
 
 def get_database_path():
-    # Default to a file in the data directory
-    return 'sqlite:///data/ss_entries.db'
+    db_path = os.getenv('DATABASE_PATH', 'sqlite:///data/ss_entries.db')
+    return db_path
 
 # Ensure the URL does not have extra quotes
 SS_RSS_URL = os.getenv('SS_RSS_URL', '').strip('"')
