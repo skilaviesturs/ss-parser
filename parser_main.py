@@ -30,7 +30,6 @@ def run_parser():
             is_match, data = listing_analyzer.analyze_listing(soup)
             entry.is_match = is_match
             entry.is_processed = True
-            # Update all extracted fields
             entry.location = data.get('location')
             entry.building_type = data.get('building_type')
             entry.rooms = data.get('rooms')

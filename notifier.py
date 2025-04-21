@@ -8,7 +8,7 @@ def notify_ntfy(title, link):
     full_url = f"{url}/{topic}"
     message = f"{title}\n{link}"
     auth = (config.NTFY_USERNAME, config.NTFY_PASSWORD) if config.NTFY_USERNAME and config.NTFY_PASSWORD else None
-    headers = {}  # Removed safe_title header
+    headers = {}
     response = requests.post(full_url, data=message.encode('utf-8'), headers=headers, auth=auth)
     response.raise_for_status()
     return response.status_code

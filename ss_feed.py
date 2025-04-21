@@ -1,8 +1,12 @@
-import requests
 import feedparser
 
-def fetch_ss_rss_feed(rss_url):
-    response = requests.get(rss_url)
-    response.raise_for_status()
-    feed = feedparser.parse(response.content)
-    return feed.entries
+def fetch_ss_rss_feed(url):
+    feed = feedparser.parse(url)
+    entries = []
+    for entry in feed.entries:
+        entries.append({
+            'title': entry.get('title'),
+            'link': entry.get('link'),
+            'published': entry.get('published')
+        })
+    return entries

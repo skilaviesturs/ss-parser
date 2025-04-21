@@ -19,7 +19,6 @@ def get_database_path():
     db_path = os.getenv('DATABASE_PATH', 'sqlite:///data/ss_entries.db')
     return db_path
 
-# Ensure the URL does not have extra quotes
 SS_RSS_URL = os.getenv('SS_RSS_URL', '').strip('"')
 LOCATION = get_list_from_env('LOCATION')
 BUILDING_TYPE = get_list_from_env('BUILDING_TYPE')

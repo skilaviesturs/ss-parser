@@ -18,7 +18,7 @@ def extract_listing_data(soup):
         value = cells[1].get_text(strip=True)
         if 'Rajons' in label:
             data['location'] = value
-        elif 'Sērija' in label:  # Updated to look for "Sērija" instead of "Mājas tips"
+        elif 'Sērija' in label:
             data['building_type'] = value
         elif 'Istabas' in label:
             try:
@@ -38,7 +38,6 @@ def extract_listing_data(soup):
                 pass
         elif 'Cena' in label:
             try:
-                # Extract price and price per m2 using regex
                 import re
                 price_match = re.search(r'([\d\s]+)\s*€', value)
                 price_m2_match = re.search(r'\(([^€]+)€/m²\)', value)
@@ -54,7 +53,6 @@ def extract_listing_data(soup):
             except Exception:
                 pass
     return data
-
 
 def matches_search_criteria(data):
     if config.LOCATION and data['location'] not in config.LOCATION:
@@ -79,7 +77,6 @@ def matches_search_criteria(data):
         if not found:
             return False
     return True
-
 
 def analyze_listing(soup):
     data = extract_listing_data(soup)

@@ -21,7 +21,6 @@ class Entry(Base):
     price = Column(Integer, default=None)
     price_m2 = Column(Float, default=None)
 
-# Use DATABASE_PATH from config
 engine = create_engine(DATABASE_PATH)
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
