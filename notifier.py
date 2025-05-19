@@ -17,6 +17,8 @@ def generate_title(data):
     title_parts = []
     if data.get('location'):
         title_parts.append(data['location'])
+    if data.get('street'):
+        title_parts.append(data['street'])
     if data.get('building_type'):
         title_parts.append(data['building_type'])
     if data.get('rooms'):
@@ -27,4 +29,6 @@ def generate_title(data):
         title_parts.append(f"{data['area']} m²")
     if data.get('price'):
         title_parts.append(f"{data['price']} €")
+    if data.get('price_m2'):
+        title_parts.append(f"({data['price_m2']} €/m²)")
     return ', '.join(title_parts)

@@ -37,6 +37,7 @@ def run_parser():
             entry.area = data.get('area')
             entry.price = data.get('price')
             entry.price_m2 = data.get('price_m2')
+            entry.street = data.get('street')
             if is_match:
                 title = generate_title(data)
                 notifier.notify_ntfy(title, entry.link)

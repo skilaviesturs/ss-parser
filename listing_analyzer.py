@@ -8,6 +8,7 @@ def extract_listing_data(soup):
         'floor': None,
         'area': None,
         'price': None,
+        'street': None,  # Added street field
         'text': soup.get_text(separator=' ', strip=True)
     }
     for row in soup.find_all('tr'):
@@ -18,6 +19,9 @@ def extract_listing_data(soup):
         value = cells[1].get_text(strip=True)
         if 'Rajons' in label:
             data['location'] = value
+        elif 'Iela' in label:  # Extract street
+            street = value.replace('[Karte]', '').strip()
+            data['street'] = street
         elif 'Sērija' in label:
             data['building_type'] = value
         elif 'Istabas' in label:
