@@ -2,7 +2,7 @@
 
 # Force-pull izmaiņas no git
 update:
-	@bash ./scripts/git-pull-from-repos.bash
+	@bash ./scripts/git-pull-from-repo.bash
 	@echo "✅ Git repository force updated from origin/main"
 
 # Build + start Docker konteinerus
