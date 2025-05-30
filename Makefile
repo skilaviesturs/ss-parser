@@ -7,12 +7,12 @@ update:
 
 # Build + start Docker konteinerus
 start:
-	@docker compose up --build -d
+	@sudo docker compose up --build -d
 	@echo "🚀 Docker containers built and started"
 
 # Stop + remove Docker konteinerus
 stop:
-	@docker compose down
+	@sudo docker compose down
 	@echo "🛑 Docker containers stopped and removed"
 
 # Pilns deploy: stop → update → start
