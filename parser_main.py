@@ -4,7 +4,7 @@ from config import SS_RSS_URL
 import web_utils
 import listing_analyzer
 import notifier
-from notifier import generate_title
+from notifier import notify, generate_title
 
 def run_parser():
     entries = ss_feed.fetch_ss_rss_feed(SS_RSS_URL)
@@ -40,7 +40,7 @@ def run_parser():
             entry.street = data.get('street')
             if is_match:
                 title = generate_title(data)
-                notifier.notify_ntfy(title, entry.link)
+                notify(title, entry.link)
                 match_count += 1
         except Exception:
             pass

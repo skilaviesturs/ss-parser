@@ -17,7 +17,7 @@ def extract_listing_data(soup):
             continue
         label = cells[0].get_text(strip=True)
         value = cells[1].get_text(strip=True)
-        if 'Rajons' in label:
+        if 'Pilsēta/pagasts' in label:
             data['location'] = value
         elif 'Iela' in label:  # Extract street
             street = value.replace('[Karte]', '').strip()
