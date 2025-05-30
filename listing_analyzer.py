@@ -8,39 +8,49 @@ def extract_listing_data(soup):
         'floor': None,
         'area': None,
         'price': None,
-        'street': None,  # Added street field
+        'street': None,
+        'price_m2': None,
         'text': soup.get_text(separator=' ', strip=True)
     }
+
+    LABELS = config.LABELS
+
     for row in soup.find_all('tr'):
         cells = row.find_all('td')
         if len(cells) < 2:
             continue
         label = cells[0].get_text(strip=True)
         value = cells[1].get_text(strip=True)
-        if 'Pilsēta/pagasts' in label:
+
+        if any(lab in label for lab in LABELS['location']):
             data['location'] = value
-        elif 'Iela' in label:  # Extract street
-            street = value.replace('[Karte]', '').strip()
-            data['street'] = street
-        elif 'Sērija' in label:
+
+        elif any(lab in label for lab in LABELS['street']):
+            data['street'] = value.replace('[Karte]', '').strip()
+
+        elif any(lab in label for lab in LABELS['building_type']):
             data['building_type'] = value
-        elif 'Istabas' in label:
+
+        elif any(lab in label for lab in LABELS['rooms']):
             try:
                 data['rooms'] = int(value)
             except Exception:
                 pass
-        elif 'Stāvs' in label:
+
+        elif any(lab in label for lab in LABELS['floor']):
             try:
                 floor_val = value.split('/')[0].strip()
                 data['floor'] = int(floor_val)
             except Exception:
                 pass
-        elif 'Platība' in label:
+
+        elif any(lab in label for lab in LABELS['area']):
             try:
                 data['area'] = float(value.split()[0].replace(',', '.'))
             except Exception:
                 pass
-        elif 'Cena' in label:
+
+        elif any(lab in label for lab in LABELS['price']):
             try:
                 import re
                 price_match = re.search(r'([\d\s]+)\s*€', value)
@@ -56,6 +66,7 @@ def extract_listing_data(soup):
                         pass
             except Exception:
                 pass
+
     return data
 
 def matches_search_criteria(data):

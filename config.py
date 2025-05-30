@@ -35,3 +35,16 @@ PARSE_INTERVAL_MINUTES = get_int_from_env('PARSE_INTERVAL_MINUTES', 30)
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN', '')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
 
+def get_label_list(var_name, default=''):
+    val = os.getenv(var_name, default)
+    return [v.strip() for v in val.split(';') if v.strip()]
+
+LABELS = {
+    'location': get_label_list('LABEL_LOCATION', 'Pilsēta/pagasts'),
+    'street': get_label_list('LABEL_STREET', 'Iela'),
+    'building_type': get_label_list('LABEL_BUILDING_TYPE', 'Sērija'),
+    'rooms': get_label_list('LABEL_ROOMS', 'Istabas'),
+    'floor': get_label_list('LABEL_FLOOR', 'Stāvs'),
+    'area': get_label_list('LABEL_AREA', 'Platība'),
+    'price': get_label_list('LABEL_PRICE', 'Cena'),
+}
