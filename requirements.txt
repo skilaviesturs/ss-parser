@@ -3,3 +3,4 @@ feedparser
 sqlalchemy
 bs4
 python-dotenv
+python-telegram-bot
