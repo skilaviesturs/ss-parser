@@ -18,7 +18,7 @@ eval "$(ssh-agent -s)" && ssh-add "$KEY_PATH"
 
 # Get updates from git
 echo -e "${YELLOW}Pulling updates from git...${RESET}"
-cd ~/a-backend && git fetch origin main --depth=1 && git reset --hard origin/main
+cd ~/ss-parser && git fetch origin main --depth=1 && git reset --hard origin/main
 
 
 # End of script
