@@ -14,6 +14,7 @@ def extract_listing_data(soup):
     }
 
     LABELS = config.LABELS
+    location_parts = []
 
     for row in soup.find_all('tr'):
         cells = row.find_all('td')
@@ -23,7 +24,7 @@ def extract_listing_data(soup):
         value = cells[1].get_text(strip=True)
 
         if any(lab in label for lab in LABELS['location']):
-            data['location'] = value
+            location_parts.append(value)
 
         elif any(lab in label for lab in LABELS['street']):
             data['street'] = value.replace('[Karte]', '').strip()
@@ -67,6 +68,9 @@ def extract_listing_data(soup):
             except Exception:
                 pass
 
+    # Apvieno pilsētu, rajonu u.c. kā 'Rīga, Jugla'
+    data['location'] = ', '.join(location_parts) if location_parts else None
+
     return data
 
 def matches_search_criteria(data):
@@ -87,13 +91,8 @@ def matches_search_criteria(data):
     if config.PRICE and (data['price'] is None or data['price'] > config.PRICE):
         return False
     if config.PROPERTIES:
-        found = False
         text_lower = data['text'].lower() if data['text'] else ''
-        for prop in config.PROPERTIES:
-            if prop.lower() in text_lower:
-                found = True
-                break
-        if not found:
+        if not any(prop.lower() in text_lower for prop in config.PROPERTIES):
             return False
     return True
 
