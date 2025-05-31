@@ -1,26 +1,30 @@
 import ss_feed
 from db_utils import save_entries_to_db, Session, Entry
-from config import SS_RSS_URL
+from config import SS_RSS_URLS
 import web_utils
 import listing_analyzer
 from notifier import notify, generate_title
 
 def run_parser():
-    entries = ss_feed.fetch_ss_rss_feed(SS_RSS_URL)
     session = Session()
     new_count = 0
-    for entry in entries:
-        exists = session.query(Entry).filter_by(link=entry.get('link')).first()
-        if not exists:
-            db_entry = Entry(
-                title=entry.get('title'),
-                link=entry.get('link'),
-                published=entry.get('published'),
-                is_processed=False
-            )
-            session.add(db_entry)
-            new_count += 1
+
+    for rss_url in SS_RSS_URLS:
+        entries = ss_feed.fetch_ss_rss_feed(rss_url)
+        for entry in entries:
+            exists = session.query(Entry).filter_by(link=entry.get('link')).first()
+            if not exists:
+                db_entry = Entry(
+                    title=entry.get('title'),
+                    link=entry.get('link'),
+                    published=entry.get('published'),
+                    is_processed=False
+                )
+                session.add(db_entry)
+                new_count += 1
+
     session.commit()
+
     unprocessed = session.query(Entry).filter_by(is_processed=False).all()
     match_count = 0
     for entry in unprocessed:
@@ -43,6 +47,7 @@ def run_parser():
                 match_count += 1
         except Exception:
             pass
+
     session.commit()
     session.close()
     print(f"New entries added: {new_count}")

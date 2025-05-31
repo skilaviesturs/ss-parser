@@ -19,7 +19,7 @@ def get_list_from_env(var_name):
     value = os.getenv(var_name, '')
     if value.strip() == '':
         return []
-    return [v.strip() for v in value.split(',') if v.strip()]
+    return [v.strip() for v in value.split(';') if v.strip()]
 
 def get_int_from_env(var_name, default=0):
     try:
@@ -31,7 +31,20 @@ def get_database_path():
     db_path = os.getenv('DATABASE_PATH', 'sqlite:///data/ss_entries.db')
     return db_path
 
-SS_RSS_URL = os.getenv('SS_RSS_URL', '').strip('"')
+def get_all_rss_urls():
+    urls = []
+    index = 1
+    while True:
+        key = f'SS_RSS_URL_{index}'
+        url = os.getenv(key)
+        if not url:
+            break
+        urls.append(url.strip())
+        index += 1
+    return urls
+
+SS_RSS_URLS = get_all_rss_urls()
+
 LOCATION = get_list_from_env('LOCATION')
 BUILDING_TYPE = get_list_from_env('BUILDING_TYPE')
 ROOMS = get_int_from_env('ROOMS')
