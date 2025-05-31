@@ -70,8 +70,12 @@ def extract_listing_data(soup):
     return data
 
 def matches_search_criteria(data):
-    if config.LOCATION and data['location'] not in config.LOCATION:
-        return False
+    if config.LOCATION and not any(
+      all(word.lower() in data['location'].lower() for word in loc.split())
+      for loc in config.LOCATION if data['location']
+      ):
+      return False
+
     if config.BUILDING_TYPE and data['building_type'] not in config.BUILDING_TYPE:
         return False
     if config.ROOMS and (data['rooms'] is None or data['rooms'] < config.ROOMS):
