@@ -1,7 +1,19 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+def is_running_in_docker():
+    # Nosaka, vai Python darbojas Docker konteinerī
+    try:
+        if os.path.exists('/.dockerenv'):
+            return True
+        with open('/proc/1/cgroup', 'rt') as f:
+            return 'docker' in f.read() or 'kubepods' in f.read()
+    except Exception:
+        return False
+
+# Tikai ārpus Docker ielādē .env failu
+if not is_running_in_docker():
+    load_dotenv()
 
 def get_list_from_env(var_name):
     value = os.getenv(var_name, '')

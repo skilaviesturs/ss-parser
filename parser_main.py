@@ -3,7 +3,6 @@ from db_utils import save_entries_to_db, Session, Entry
 from config import SS_RSS_URL
 import web_utils
 import listing_analyzer
-import notifier
 from notifier import notify, generate_title
 
 def run_parser():
