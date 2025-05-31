@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.PHONY: ps update start stop deploy
+.PHONY: ps clean update start stop deploy reload help
 
 help:
 	@echo ""
@@ -39,3 +39,6 @@ stop:
 # Pilns deploy: stop → update → start
 deploy: stop clean update start ps
 	@echo "🎉 Deployment completed"
+
+reload: stop start ps
+	@echo "🔄 Reload completed"
