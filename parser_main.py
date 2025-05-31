@@ -3,7 +3,7 @@ from db_utils import save_entries_to_db, Session, Entry
 from config import SS_RSS_URLS
 import web_utils
 import listing_analyzer
-from notifier import notify, generate_title
+from notifier import notify, generate_message
 
 def run_parser():
     session = Session()
@@ -34,6 +34,7 @@ def run_parser():
             entry.is_match = is_match
             entry.is_processed = True
             entry.location = data.get('location')
+            entry.region = data.get('region')
             entry.building_type = data.get('building_type')
             entry.rooms = data.get('rooms')
             entry.floor = data.get('floor')
@@ -42,8 +43,10 @@ def run_parser():
             entry.price_m2 = data.get('price_m2')
             entry.street = data.get('street')
             if is_match:
-                title = generate_title(data)
-                notify(title, entry.link)
+                title, body = generate_message(data, entry.link)
+                # print(f">>> DEBUG DATA DUMP: region={data['region']}, location={data['location']}")
+                print(f"[notify] MATCH:\n{title}\nMESSAGE: {body}")
+                notify(title, body)
                 match_count += 1
         except Exception:
             pass

@@ -7,20 +7,23 @@ Base = declarative_base()
 
 class Entry(Base):
     __tablename__ = 'entries'
+
     id = Column(Integer, primary_key=True)
     title = Column(String)
-    link = Column(String)
+    link = Column(String, unique=True)
     published = Column(String)
     is_processed = Column(Boolean, default=False)
-    is_match = Column(Boolean, default=None)
-    location = Column(String, default=None)
-    building_type = Column(String, default=None)
-    rooms = Column(Integer, default=None)
-    floor = Column(Integer, default=None)
-    area = Column(Float, default=None)
-    price = Column(Integer, default=None)
-    price_m2 = Column(Float, default=None)
-    street = Column(String, default=None)
+    is_match = Column(Boolean, default=False)
+    location = Column(String, nullable=True)
+    region = Column(String, nullable=True)  # 🆕 JAUNA RINDA
+    street = Column(String, nullable=True)
+    building_type = Column(String, nullable=True)
+    rooms = Column(Integer, nullable=True)
+    floor = Column(Integer, nullable=True)
+    area = Column(Float, nullable=True)
+    price = Column(Integer, nullable=True)
+    price_m2 = Column(Float, nullable=True)
+
 
 engine = create_engine(DATABASE_PATH)
 Base.metadata.create_all(engine)

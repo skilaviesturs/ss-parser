@@ -1,8 +1,7 @@
 import requests
 import config
-import urllib.parse
-from telegram import Bot
 import asyncio
+from telegram import Bot
 
 # Inicializē Telegram botu, ja TOKEN ir pieejams
 telegram_bot = Bot(token=config.TELEGRAM_TOKEN) if config.TELEGRAM_TOKEN else None
@@ -17,29 +16,32 @@ except RuntimeError:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-def notify(title, link):
+def notify(title: str, body: str):
     sent = False
 
     if config.NTFY_URL:
-        sent |= notify_ntfy(title, link)
+        sent |= notify_ntfy(title, body)
 
     if telegram_bot and config.TELEGRAM_CHAT_ID:
-        sent |= notify_telegram(title, link)
+        sent |= notify_telegram(title, body)
 
     if not sent:
         print("[notify] ⚠️ No notification method configured!")
 
     return sent
 
-def notify_ntfy(title, link):
+def notify_ntfy(title: str, body: str):
     try:
         url = config.NTFY_URL.rstrip('/')
         topic = 'ss-matches'
         full_url = f"{url}/{topic}"
-        message = f"{title}\n{link}"
-        auth = (config.NTFY_USERNAME, config.NTFY_PASSWORD) if config.NTFY_USERNAME and config.NTFY_PASSWORD else None
-        headers = {}
-        response = requests.post(full_url, data=message.encode('utf-8'), headers=headers, auth=auth)
+        auth = (
+            (config.NTFY_USERNAME, config.NTFY_PASSWORD)
+            if config.NTFY_USERNAME and config.NTFY_PASSWORD
+            else None
+        )
+        headers = {"Title": title}
+        response = requests.post(full_url, data=body.encode('utf-8'), headers=headers, auth=auth)
         response.raise_for_status()
         print(f"[notify_ntfy] ✅ Sent to ntfy")
         return True
@@ -47,12 +49,11 @@ def notify_ntfy(title, link):
         print(f"[notify_ntfy] ❌ Failed: {e}")
         return False
 
-def notify_telegram(title, link):
+def notify_telegram(title: str, body: str):
     if not telegram_bot or not config.TELEGRAM_CHAT_ID:
         return False
     try:
-        location, street, rest = split_title(title)
-        message = f"<b>{location}, {street}</b>\n{rest}\n{link}"
+        message = f"<b>{title}</b>\n{body}"
         loop.run_until_complete(
             telegram_bot.send_message(
                 chat_id=config.TELEGRAM_CHAT_ID,
@@ -60,34 +61,41 @@ def notify_telegram(title, link):
                 parse_mode="HTML"
             )
         )
-        print(f"[notify_telegram] ✅ Sent to Telegram")
+        print(f"[notify_telegram] ✅ Sent to Telegram\n")
         return True
     except Exception as e:
-        print(f"[notify_telegram] ❌ Failed: {e}")
+        print(f"[notify_telegram] ❌ Failed: {e}\n")
         return False
 
-def split_title(full_title: str):
-    """
-    Sadala pilno title daļu trīs komponentēs:
-    - location
-    - street
-    - pārējie dati
-    """
-    parts = full_title.split(', ')
-    location = parts[0] if len(parts) > 0 else ''
-    street = parts[1] if len(parts) > 1 else ''
-    rest = ', '.join(parts[2:]) if len(parts) > 2 else ''
-    return location, street, rest
+def generate_message(data: dict, link: str) -> tuple[str, str]:
+    # Virsraksts (region + location + street)
+    title_parts = []
 
-def generate_title(data):
-    parts = filter(None, [
-        data.get('location'),
-        data.get('street'),
-        f"{data['building_type']}" if data.get('building_type') else None,
-        f"{data['rooms']} istaba" if data['rooms'] == 1 else f"{data['rooms']} istabas" if data.get('rooms') else None,
-        f"{data['floor']} stāvs" if data.get('floor') else None,
+    # Vispirms vienmēr 'location' (piemēram, Rīga)
+    if data.get('location'):
+        title_parts.append(data['location'])
+    # Tad 'region', tikai ja tas atšķiras no location
+    if data.get('region') and data['region'] != data['location']:
+        title_parts.append(data['region'])
+    # Beigās iela
+    if data.get('street'):
+        title_parts.append(data['street'])
+
+    title = ', '.join(title_parts)
+
+    # Ķermenis (building_type, rooms, floor, area, price, price_m2)
+    body_parts = list(filter(None, [
+        data.get('building_type'),
+        f"{data['rooms']} istaba" if data.get('rooms') == 1 else (
+            f"{data['rooms']} istabas" if data.get('rooms') else None
+        ),
+        f"{data['floor']}. stāvs" if data.get('floor') else None,
         f"{data['area']} m²" if data.get('area') else None,
         f"{data['price']} €" if data.get('price') else None,
         f"({data['price_m2']} €/m²)" if data.get('price_m2') else None,
-    ])
-    return ', '.join(parts)
+    ]))
+
+    body = ', '.join(body_parts)
+    body += f"\n{link}"
+
+    return title, body

@@ -13,13 +13,13 @@ def is_running_in_docker():
 
 # Tikai ārpus Docker ielādē .env failu
 if not is_running_in_docker():
-    load_dotenv()
+    load_dotenv(override=True)
 
 def get_list_from_env(var_name):
     value = os.getenv(var_name, '')
     if value.strip() == '':
         return []
-    return [v.strip() for v in value.split(';') if v.strip()]
+    return [v.strip() for v in value.split(',') if v.strip()]
 
 def get_int_from_env(var_name, default=0):
     try:
@@ -39,13 +39,17 @@ def get_all_rss_urls():
         url = os.getenv(key)
         if not url:
             break
+        print(f"[config] Found RSS feed: {key} = {url}")
         urls.append(url.strip())
         index += 1
     return urls
 
+
 SS_RSS_URLS = get_all_rss_urls()
 
 LOCATION = get_list_from_env('LOCATION')
+print(f"[config] Parsed LOCATION = {LOCATION}")
+
 BUILDING_TYPE = get_list_from_env('BUILDING_TYPE')
 ROOMS = get_int_from_env('ROOMS')
 FLOOR = get_int_from_env('FLOOR')
@@ -62,14 +66,16 @@ TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
 
 def get_label_list(var_name, default=''):
     val = os.getenv(var_name, default)
-    return [v.strip() for v in val.split(';') if v.strip()]
+    return [v.strip() for v in val.split(',') if v.strip()]
 
+# Fiksētās vērtības no SS.lv tabulas kolonnām
 LABELS = {
-    'location': get_label_list('LABEL_LOCATION', 'Pilsēta/pagasts'),
-    'street': get_label_list('LABEL_STREET', 'Iela'),
-    'building_type': get_label_list('LABEL_BUILDING_TYPE', 'Sērija'),
-    'rooms': get_label_list('LABEL_ROOMS', 'Istabas'),
-    'floor': get_label_list('LABEL_FLOOR', 'Stāvs'),
-    'area': get_label_list('LABEL_AREA', 'Platība'),
-    'price': get_label_list('LABEL_PRICE', 'Cena'),
+    'location': ['Pilsēta', 'Pilsēta/pagasts'],
+    'region': ['Rajons', 'Pilsēta, rajons'],
+    'street': ['Iela'],
+    'building_type': ['Mājas tips'],
+    'rooms': ['Istabas'],
+    'floor': ['Stāvs'],
+    'area': ['Platība'],
+    'price': ['Cena'],
 }
