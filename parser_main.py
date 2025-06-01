@@ -45,9 +45,9 @@ def run_parser():
             entry.street = data.get('street')
             if is_match:
                 title, body = generate_message(data, entry.link)
-                # logger.info(f">>> DEBUG DATA DUMP: region={data['region']}, location={data['location']}")
-                logger.info(f"[parser] MATCH:\n{title}\nMESSAGE: {body}")
-                notify(title, body)
+                logger.debug(f">>> DEBUG DATA DUMP: region={data['region']}, location={data['location']}")
+                logger.info(f"[parser] →\nMATCH: {title}\nMESSAGE: {body}")
+                # notify(title, body)
                 match_count += 1
         except Exception:
             pass

@@ -90,41 +90,41 @@ def matches_search_criteria(data):
             break
 
     if not location_match:
-        # logger.info(f"[DEBUG] ❌ Rejected by LOCATION: '{data.get('location')}' / '{data.get('region')}' vs {config.LOCATION}")
+        logger.debug(f"[DEBUG] ❌ Rejected by LOCATION: '{data.get('location')}' / '{data.get('region')}' vs {config.LOCATION}")
         return False
 
     if config.BUILDING_TYPE and data['building_type'] not in config.BUILDING_TYPE:
-        # logger.info(f"[DEBUG] ❌ Rejected by BUILDING_TYPE: '{data['building_type']}'")
+        logger.debug(f"[DEBUG] ❌ Rejected by BUILDING_TYPE: '{data['building_type']}'")
         return False
 
     if config.ROOMS and (data['rooms'] is None or data['rooms'] < config.ROOMS):
-        # logger.info(f"[DEBUG] ❌ Rejected by ROOMS: '{data['rooms']}' < {config.ROOMS}")
+        logger.debug(f"[DEBUG] ❌ Rejected by ROOMS: '{data['rooms']}' < {config.ROOMS}")
         return False
 
     if config.FLOOR and (data['floor'] is None or data['floor'] < config.FLOOR):
-        # logger.info(f"[DEBUG] ❌ Rejected by FLOOR: '{data['floor']}' < {config.FLOOR}")
+        logger.debug(f"[DEBUG] ❌ Rejected by FLOOR: '{data['floor']}' < {config.FLOOR}")
         return False
 
     if config.AREA and (data['area'] is None or data['area'] < config.AREA):
-        # logger.info(f"[DEBUG] ❌ Rejected by AREA: '{data['area']}' < {config.AREA}")
+        logger.debug(f"[DEBUG] ❌ Rejected by AREA: '{data['area']}' < {config.AREA}")
         return False
 
     if config.PRICE and (data['price'] is None or data['price'] > config.PRICE):
-        # logger.info(f"[DEBUG] ❌ Rejected by PRICE: '{data['price']}' > {config.PRICE}")
+        logger.debug(f"[DEBUG] ❌ Rejected by PRICE: '{data['price']}' > {config.PRICE}")
         return False
 
     if config.PROPERTIES:
         text_lower = data['text'].lower() if data['text'] else ''
         if not any(prop.lower() in text_lower for prop in config.PROPERTIES):
-            # logger.info(f"[DEBUG] ❌ Rejected by PROPERTIES: text doesn't include any of {config.PROPERTIES}")
+            logger.debug(f"[DEBUG] ❌ Rejected by PROPERTIES: text doesn't include any of {config.PROPERTIES}")
             return False
 
-    # logger.info(f"[DEBUG] ✅ MATCH OK: '{data.get('location')}'")
+    logger.debug(f"[DEBUG] ✅ MATCH OK: '{data.get('location')}'")
     return True
 
 
 def analyze_listing(soup):
     data = extract_listing_data(soup)
-    # logger.info(f"[DEBUG] Extracted location: {data.get('location')}")
+    logger.debug(f"[DEBUG] Extracted location: {data.get('location')}")
     is_match = matches_search_criteria(data)
     return is_match, data

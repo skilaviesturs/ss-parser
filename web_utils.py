@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from logger import logger
 import random
 
 USER_AGENTS = [
@@ -19,7 +20,7 @@ def fetch_html(url):
         response.raise_for_status()
         return response.text
     except Exception as e:
-        print(f"[fetch_html] Error fetching {url}: {e}")  
+        logger.info(f"[fetch_html] Error fetching {url}: {e}")  
         return None
 
 def parse_html(html):
