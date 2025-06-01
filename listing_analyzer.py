@@ -1,4 +1,5 @@
 import config
+from logger import logger
 
 def extract_listing_data(soup):
     data = {
@@ -89,41 +90,41 @@ def matches_search_criteria(data):
             break
 
     if not location_match:
-        # print(f"[DEBUG] ❌ Rejected by LOCATION: '{data.get('location')}' / '{data.get('region')}' vs {config.LOCATION}")
+        # logger.info(f"[DEBUG] ❌ Rejected by LOCATION: '{data.get('location')}' / '{data.get('region')}' vs {config.LOCATION}")
         return False
 
     if config.BUILDING_TYPE and data['building_type'] not in config.BUILDING_TYPE:
-        # print(f"[DEBUG] ❌ Rejected by BUILDING_TYPE: '{data['building_type']}'")
+        # logger.info(f"[DEBUG] ❌ Rejected by BUILDING_TYPE: '{data['building_type']}'")
         return False
 
     if config.ROOMS and (data['rooms'] is None or data['rooms'] < config.ROOMS):
-        # print(f"[DEBUG] ❌ Rejected by ROOMS: '{data['rooms']}' < {config.ROOMS}")
+        # logger.info(f"[DEBUG] ❌ Rejected by ROOMS: '{data['rooms']}' < {config.ROOMS}")
         return False
 
     if config.FLOOR and (data['floor'] is None or data['floor'] < config.FLOOR):
-        # print(f"[DEBUG] ❌ Rejected by FLOOR: '{data['floor']}' < {config.FLOOR}")
+        # logger.info(f"[DEBUG] ❌ Rejected by FLOOR: '{data['floor']}' < {config.FLOOR}")
         return False
 
     if config.AREA and (data['area'] is None or data['area'] < config.AREA):
-        # print(f"[DEBUG] ❌ Rejected by AREA: '{data['area']}' < {config.AREA}")
+        # logger.info(f"[DEBUG] ❌ Rejected by AREA: '{data['area']}' < {config.AREA}")
         return False
 
     if config.PRICE and (data['price'] is None or data['price'] > config.PRICE):
-        # print(f"[DEBUG] ❌ Rejected by PRICE: '{data['price']}' > {config.PRICE}")
+        # logger.info(f"[DEBUG] ❌ Rejected by PRICE: '{data['price']}' > {config.PRICE}")
         return False
 
     if config.PROPERTIES:
         text_lower = data['text'].lower() if data['text'] else ''
         if not any(prop.lower() in text_lower for prop in config.PROPERTIES):
-            # print(f"[DEBUG] ❌ Rejected by PROPERTIES: text doesn't include any of {config.PROPERTIES}")
+            # logger.info(f"[DEBUG] ❌ Rejected by PROPERTIES: text doesn't include any of {config.PROPERTIES}")
             return False
 
-    # print(f"[DEBUG] ✅ MATCH OK: '{data.get('location')}'")
+    # logger.info(f"[DEBUG] ✅ MATCH OK: '{data.get('location')}'")
     return True
 
 
 def analyze_listing(soup):
     data = extract_listing_data(soup)
-    # print(f"[DEBUG] Extracted location: {data.get('location')}")
+    # logger.info(f"[DEBUG] Extracted location: {data.get('location')}")
     is_match = matches_search_criteria(data)
     return is_match, data

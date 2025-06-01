@@ -2,6 +2,7 @@ import requests
 import config
 import asyncio
 from telegram import Bot
+from logger import logger
 
 # Inicializē Telegram botu, ja TOKEN ir pieejams
 telegram_bot = Bot(token=config.TELEGRAM_TOKEN) if config.TELEGRAM_TOKEN else None
@@ -26,7 +27,7 @@ def notify(title: str, body: str):
         sent |= notify_telegram(title, body)
 
     if not sent:
-        print("[notify] ⚠️ No notification method configured!")
+        logger.info("[notify] ⚠️ No notification method configured!")
 
     return sent
 
@@ -43,10 +44,10 @@ def notify_ntfy(title: str, body: str):
         headers = {"Title": title}
         response = requests.post(full_url, data=body.encode('utf-8'), headers=headers, auth=auth)
         response.raise_for_status()
-        print(f"[notify_ntfy] ✅ Sent to ntfy")
+        logger.info(f"[ntfy] ✅ Sent to ntfy")
         return True
     except Exception as e:
-        print(f"[notify_ntfy] ❌ Failed: {e}")
+        logger.info(f"[ntfy] ❌ Failed: {e}")
         return False
 
 def notify_telegram(title: str, body: str):
@@ -61,10 +62,10 @@ def notify_telegram(title: str, body: str):
                 parse_mode="HTML"
             )
         )
-        print(f"[notify_telegram] ✅ Sent to Telegram\n")
+        logger.info(f"[tele] ✅ Sent to Telegram\n")
         return True
     except Exception as e:
-        print(f"[notify_telegram] ❌ Failed: {e}\n")
+        logger.info(f"[tele] ❌ Failed: {e}\n")
         return False
 
 def generate_message(data: dict, link: str) -> tuple[str, str]:

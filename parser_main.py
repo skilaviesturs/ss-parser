@@ -4,6 +4,7 @@ from config import SS_RSS_URLS
 import web_utils
 import listing_analyzer
 from notifier import notify, generate_message
+from logger import logger
 
 def run_parser():
     session = Session()
@@ -44,14 +45,14 @@ def run_parser():
             entry.street = data.get('street')
             if is_match:
                 title, body = generate_message(data, entry.link)
-                # print(f">>> DEBUG DATA DUMP: region={data['region']}, location={data['location']}")
-                print(f"[notify] MATCH:\n{title}\nMESSAGE: {body}")
-                notify(title, body)
+                # logger.info(f">>> DEBUG DATA DUMP: region={data['region']}, location={data['location']}")
+                logger.info(f"[parser] MATCH:\n{title}\nMESSAGE: {body}")
+                # notify(title, body)
                 match_count += 1
         except Exception:
             pass
 
     session.commit()
     session.close()
-    print(f"New entries added: {new_count}")
-    print(f"Matches found: {match_count}")
+    logger.info(f"[parser] New entries added: {new_count}")
+    logger.info(f"[parser] Matches found: {match_count}")

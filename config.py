@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from logger import logger
 
 def is_running_in_docker():
     # Nosaka, vai Python darbojas Docker konteinerī
@@ -39,7 +40,7 @@ def get_all_rss_urls():
         url = os.getenv(key)
         if not url:
             break
-        print(f"[config] Found RSS feed: {key} = {url}")
+        logger.info(f"[conf] Found RSS feed: {key} = {url}")
         urls.append(url.strip())
         index += 1
     return urls
@@ -48,7 +49,7 @@ def get_all_rss_urls():
 SS_RSS_URLS = get_all_rss_urls()
 
 LOCATION = get_list_from_env('LOCATION')
-print(f"[config] Parsed LOCATION = {LOCATION}")
+logger.info(f"[conf] Parsed LOCATION = {LOCATION}")
 
 BUILDING_TYPE = get_list_from_env('BUILDING_TYPE')
 ROOMS = get_int_from_env('ROOMS')
