@@ -80,17 +80,20 @@ def matches_search_criteria(data):
     # LOCATION match: pārbauda gan 'location', gan 'region'
     if config.LOCATION:
       location_match = False
-
-    # Apvieno 'location' un 'region' lauku saturu kā vienu meklēšanas tekstu
-    # combined_location = f"{data.get('location') or ''} {data.get('region') or ''}".lower()
+      loc_field = (data.get('location') or '').lower()
+      region_field = (data.get('region') or '').lower()
 
     for loc in config.LOCATION:
-        if loc.lower() == (data.get('location') or '').lower() or loc.lower() == (data.get('region') or '').lower():
-            location_match = True
-            break
-        # if loc.lower() in combined_location:
-        #     location_match = True
-        #     break
+        loc = loc.lower().strip()
+
+        if config.STRICT_LOCATION_MATCH:
+            if loc == loc_field or loc == region_field:
+                location_match = True
+                break
+        else:
+            if loc in loc_field or loc in region_field:
+                location_match = True
+                break
 
     if not location_match:
         logger.debug(f"❌ Rejected by LOCATION: '{data.get('location')}' / '{data.get('region')}' vs {config.LOCATION}")

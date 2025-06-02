@@ -45,11 +45,16 @@ def get_all_rss_urls():
         index += 1
     return urls
 
+def get_bool_from_env(var_name, default=False):
+    val = os.getenv(var_name, str(default)).strip().lower()
+    return val in ['1', 'true', 'yes']
 
 SS_RSS_URLS = get_all_rss_urls()
 
 LOCATION = get_list_from_env('LOCATION')
 logger.info(f"[conf] Parsed LOCATION = {LOCATION}")
+STRICT_LOCATION_MATCH = get_bool_from_env('STRICT_LOCATION_MATCH')
+logger.info(f"[conf] Set strict LOCATION match = {STRICT_LOCATION_MATCH}")
 
 BUILDING_TYPE = get_list_from_env('BUILDING_TYPE')
 ROOMS = get_int_from_env('ROOMS')
