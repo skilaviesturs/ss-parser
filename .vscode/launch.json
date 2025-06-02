@@ -13,7 +13,7 @@
         },
         {
             "name": "Debug test_analyzer with SS.lv URL",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/test_analyzer.py",
             "args": [
