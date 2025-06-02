@@ -47,7 +47,7 @@ def run_parser():
                 title, body = generate_message(data, entry.link)
                 logger.debug(f">>> DEBUG DATA DUMP: region={data['region']}, location={data['location']}")
                 logger.info(f"[parser] →\nMATCH: {title}\nMESSAGE: {body}")
-                # notify(title, body)
+                notify(title, body)
                 match_count += 1
         except Exception:
             pass
