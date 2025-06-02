@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.PHONY: ps clean update start stop deploy reload help
+.PHONY: ps clean update build start stop deploy reload help
 
 help:
 	@echo ""
@@ -11,8 +11,8 @@ help:
 	@echo "  make build 		# Izveido Docker konteinerus"
 	@echo "  make start     # Build and start Docker containers"
 	@echo "  make stop			# Stop and remove Docker containers"
-	@echo "  make reload  	# Stop and start Docker containers"
 	@echo "  make deploy		# Pilns deploy: stop → update → start"
+	@echo "  make reload  	# Stop and start Docker containers"
 	@echo ""
 
 ps:
@@ -29,7 +29,7 @@ update:
 	@echo "✅ Git repository force updated from origin/main"
 
 # Build Docker konteinerus
-start:
+build:
 	@sudo docker compose up --build -d
 	@echo "🚀 Docker containers built"
 
@@ -44,7 +44,7 @@ stop:
 	@echo "🛑 Docker containers stopped and removed"
 
 # Pilns deploy: stop → update → start
-deploy: stop clean update start ps
+deploy: stop clean update build start ps
 	@echo "🎉 Deployment completed"
 
 reload: stop start ps
