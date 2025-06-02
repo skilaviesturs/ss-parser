@@ -8,8 +8,10 @@ help:
 	@echo "  make ps        # Display running Docker containers"
 	@echo "  make clean		  # Tīra docker konteinerus un attēlus"
 	@echo "  make update 		# Force-pull izmaiņas no git"
+	@echo "  make build 		# Izveido Docker konteinerus"
 	@echo "  make start     # Build and start Docker containers"
 	@echo "  make stop			# Stop and remove Docker containers"
+	@echo "  make reload  	# Stop and start Docker containers"
 	@echo "  make deploy		# Pilns deploy: stop → update → start"
 	@echo ""
 
@@ -26,10 +28,15 @@ update:
 	@bash ./scripts/git-pull-from-repo.bash
 	@echo "✅ Git repository force updated from origin/main"
 
-# Build + start Docker konteinerus
+# Build Docker konteinerus
 start:
 	@sudo docker compose up --build -d
-	@echo "🚀 Docker containers built and started"
+	@echo "🚀 Docker containers built"
+
+# Start Docker konteinerus
+start:
+	@sudo docker compose up -d
+	@echo "🚀 Docker containers started"
 
 # Stop + remove Docker konteinerus
 stop:
