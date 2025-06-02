@@ -82,23 +82,26 @@ def matches_search_criteria(data):
       location_match = False
 
     # Apvieno 'location' un 'region' lauku saturu kā vienu meklēšanas tekstu
-    combined_location = f"{data.get('location') or ''} {data.get('region') or ''}".lower()
+    # combined_location = f"{data.get('location') or ''} {data.get('region') or ''}".lower()
 
     for loc in config.LOCATION:
-        if loc.lower() in combined_location:
+        if loc.lower() == (data.get('location') or '').lower() or loc.lower() == (data.get('region') or '').lower():
             location_match = True
             break
+        # if loc.lower() in combined_location:
+        #     location_match = True
+        #     break
 
     if not location_match:
-        logger.debug(f"[DEBUG] ❌ Rejected by LOCATION: '{data.get('location')}' / '{data.get('region')}' vs {config.LOCATION}")
+        logger.debug(f"❌ Rejected by LOCATION: '{data.get('location')}' / '{data.get('region')}' vs {config.LOCATION}")
         return False
 
     if config.BUILDING_TYPE and data['building_type'] not in config.BUILDING_TYPE:
-        logger.debug(f"[DEBUG] ❌ Rejected by BUILDING_TYPE: '{data['building_type']}'")
+        logger.debug(f"❌ Rejected by BUILDING_TYPE: '{data['building_type']}'")
         return False
 
     if config.ROOMS and (data['rooms'] is None or data['rooms'] < config.ROOMS):
-        logger.debug(f"[DEBUG] ❌ Rejected by ROOMS: '{data['rooms']}' < {config.ROOMS}")
+        logger.debug(f"❌ Rejected by ROOMS: '{data['rooms']}' < {config.ROOMS}")
         return False
 
     if config.FLOOR and (data['floor'] is None or data['floor'] < config.FLOOR):
@@ -106,25 +109,25 @@ def matches_search_criteria(data):
         return False
 
     if config.AREA and (data['area'] is None or data['area'] < config.AREA):
-        logger.debug(f"[DEBUG] ❌ Rejected by AREA: '{data['area']}' < {config.AREA}")
+        logger.debug(f"❌ Rejected by AREA: '{data['area']}' < {config.AREA}")
         return False
 
     if config.PRICE and (data['price'] is None or data['price'] > config.PRICE):
-        logger.debug(f"[DEBUG] ❌ Rejected by PRICE: '{data['price']}' > {config.PRICE}")
+        logger.debug(f"❌ Rejected by PRICE: '{data['price']}' > {config.PRICE}")
         return False
 
     if config.PROPERTIES:
         text_lower = data['text'].lower() if data['text'] else ''
         if not any(prop.lower() in text_lower for prop in config.PROPERTIES):
-            logger.debug(f"[DEBUG] ❌ Rejected by PROPERTIES: text doesn't include any of {config.PROPERTIES}")
+            logger.debug(f"❌ Rejected by PROPERTIES: text doesn't include any of {config.PROPERTIES}")
             return False
 
-    logger.debug(f"[DEBUG] ✅ MATCH OK: '{data.get('location')}'")
+    logger.debug(f"✅ MATCH OK: '{data.get('location')}'")
     return True
 
 
 def analyze_listing(soup):
     data = extract_listing_data(soup)
-    logger.debug(f"[DEBUG] Extracted location: {data.get('location')}")
+    logger.debug(f"Extracted location: {data.get('location')}")
     is_match = matches_search_criteria(data)
     return is_match, data
