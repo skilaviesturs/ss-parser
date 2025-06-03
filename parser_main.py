@@ -76,8 +76,8 @@ def run_parser():
 
     session.commit()
     session.close()
-    logger.info(f"[parser] New entries added: {new_count}")
+    logger.info(f"[parser] New entries added from RSS feed: {new_count}")
     logger.info(f"[parser] Matches found: {match_count}")
     
     removed_today = session.query(Entry).filter(Entry.date_removed == today).count()
-    logger.info(f"[parser] Entries removed today: {removed_today}")
+    logger.info(f"[parser] Entries removed from RSS feed today: {removed_today}")
