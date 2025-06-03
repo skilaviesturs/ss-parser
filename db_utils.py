@@ -1,9 +1,11 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, Date
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 from config import DATABASE_PATH
+from datetime import date
 
-Base = declarative_base()
+Base = declarative_base()    # datums + laiks
 
 class Entry(Base):
     __tablename__ = 'entries'
@@ -23,7 +25,8 @@ class Entry(Base):
     area = Column(Float, nullable=True)
     price = Column(Integer, nullable=True)
     price_m2 = Column(Float, nullable=True)
-
+    date_published = Column(Date, nullable=True)
+    date_removed = Column(Date, nullable=True)
 
 engine = create_engine(DATABASE_PATH)
 Base.metadata.create_all(engine)
@@ -46,8 +49,19 @@ def save_entries_to_db(entries):
                 area=entry.get('area'),
                 price=entry.get('price'),
                 price_m2=entry.get('price_m2'),
-                street=entry.get('street')
+                street=entry.get('street'),
+                date_published=date.today(), # kad pirmais reizi parādās feedā
+                date_removed=None    # kad vairs nav feedā
             )
             session.add(db_entry)
-    session.commit()
+        else:
+            # Ja sludinājums bija atzīmēts kā "noņemts", bet tagad atkal redzams
+            if exists.date_removed is not None:
+                exists.date_removed = None
+
+    try:
+        session.commit()
+    except IntegrityError:
+        session.rollback()
+        
     session.close()
