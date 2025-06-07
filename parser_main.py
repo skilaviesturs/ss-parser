@@ -12,16 +12,13 @@ today = date.today()
 def run_parser():
     new_count = 0
     match_count = 0
-    # Obligāti jāievāc visi šodienas RSS feed linki, lai saprastu, kas pazudis
-    all_current_links = set()
 
     with Session() as session:
 
       for rss_url in SS_RSS_URLS:
           entries = ss_feed.fetch_ss_rss_feed(rss_url)
           for entry in entries:
-              link = entry.get('link')  # ← Saglabājam link mainīgajā
-              all_current_links.add(link)  # ✅ Reģistrējam kā "šodien redzētu" sludinājumu
+              link = entry.get('link')
 
               exists = session.query(Entry).filter_by(link=link).first()
               if not exists:
@@ -30,15 +27,11 @@ def run_parser():
                       link=link,
                       published=entry.get('published'),
                       is_processed=False,
-                      date_published=today,  # ✅ jauns ieraksts
-                      date_removed=None      # vēl nav beidzies
+                      date_published=today,
+                      date_removed=None
                   )
                   session.add(db_entry)
                   new_count += 1
-              else:
-                # ✅ Ja ieraksts parādās atkal, bet iepriekš bija noņemts — notīri date_removed
-                if exists.date_removed is not None:
-                  exists.date_removed = None
 
       session.commit()
 
@@ -62,23 +55,12 @@ def run_parser():
                   title, body = generate_message(data, entry.link)
                   logger.debug(f">>> DEBUG DATA DUMP: region={data['region']}, location={data['location']}")
                   logger.info(f"[parser] →\nMATCH: {title}\nMESSAGE: {body}")
-                  notify(title, body)
+                  # notify(title, body)
                   match_count += 1
           except Exception as e:
               logger.info(f"[parser] Failed to process {entry.link}: {str(e)}")
 
-      # ✅ Atrodam sludinājumus, kas vairs nav feedā – ieliekam date_removed
-      active_entries = session.query(Entry).filter(Entry.date_removed == None).all()
-      for entry in active_entries:
-          if entry.link not in all_current_links:
-              entry.date_removed = today
-              logger.info(f"[parser] Marked as removed: {entry.link}")
-
       session.commit()
-
-      removed_today = session.query(Entry).filter(Entry.date_removed == today).count()
     
-    # Logs ārpus `with`, sesija šeit jau ir aizvērta
     logger.info(f"[parser] New entries added from RSS feed: {new_count}")
     logger.info(f"[parser] Matches found: {match_count}")
-    logger.info(f"[parser] Entries removed from RSS feed today: {removed_today}")

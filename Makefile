@@ -17,11 +17,11 @@ help:
 
 ps:
 	@echo "📦 Docker konteineru saraksts"
-	@sudo docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}" -a
+	@docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}" -a
 
 clean:
 	@echo "🧹 Tīra docker konteinerus un attēlus"
-	@sudo docker system prune -f --volumes
+	@docker system prune -f --volumes
 
 # Force-pull izmaiņas no git
 update:
@@ -30,17 +30,17 @@ update:
 
 # Build Docker konteinerus
 build:
-	@sudo docker compose up --build -d
+	@docker compose --build
 	@echo "🚀 Docker containers built"
 
 # Start Docker konteinerus
 start:
-	@sudo docker compose up -d
+	@docker compose up -d
 	@echo "🚀 Docker containers started"
 
 # Stop + remove Docker konteinerus
 stop:
-	@sudo docker compose down
+	@docker compose down
 	@echo "🛑 Docker containers stopped and removed"
 
 # Pilns deploy: stop → update → start

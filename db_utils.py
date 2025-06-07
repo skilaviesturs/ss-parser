@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from config import DATABASE_PATH
 from datetime import date
 
-Base = declarative_base()    # datums + laiks
+Base = declarative_base()
 
 class Entry(Base):
     __tablename__ = 'entries'
@@ -17,7 +17,7 @@ class Entry(Base):
     is_processed = Column(Boolean, default=False)
     is_match = Column(Boolean, default=False)
     location = Column(String, nullable=True)
-    region = Column(String, nullable=True)  # 🆕 JAUNA RINDA
+    region = Column(String, nullable=True)
     street = Column(String, nullable=True)
     building_type = Column(String, nullable=True)
     rooms = Column(Integer, nullable=True)
@@ -26,7 +26,6 @@ class Entry(Base):
     price = Column(Integer, nullable=True)
     price_m2 = Column(Float, nullable=True)
     date_published = Column(Date, nullable=True)
-    date_removed = Column(Date, nullable=True)
 
 engine = create_engine(
     DATABASE_PATH,
