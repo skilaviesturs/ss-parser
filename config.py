@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from logger import logger
 
 def is_running_in_docker():
-    # Nosaka, vai Python darbojas Docker konteinerī
     try:
         if os.path.exists('/.dockerenv'):
             return True
@@ -14,7 +13,6 @@ def is_running_in_docker():
     except Exception:
         return False
 
-# Tikai ārpus Docker ielādē .env failu
 if not is_running_in_docker():
     load_dotenv(override=True)
 
@@ -89,7 +87,6 @@ def get_label_list(var_name, default=''):
     val = os.getenv(var_name, default)
     return [v.strip() for v in val.split(',') if v.strip()]
 
-# Fiksētās vērtības no SS.lv tabulas kolonnām
 LABELS = {
     'location': ['Pilsēta', 'Pilsēta/pagasts'],
     'region': ['Rajons', 'Pilsēta, rajons'],
