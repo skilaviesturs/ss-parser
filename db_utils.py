@@ -28,40 +28,45 @@ class Entry(Base):
     date_published = Column(Date, nullable=True)
     date_removed = Column(Date, nullable=True)
 
-engine = create_engine(DATABASE_PATH)
+engine = create_engine(
+    DATABASE_PATH,
+    pool_size=5,        # default ir 5, bet vari palielināt ja vajag
+    max_overflow=10,    # cik pagaidu savienojumi var būt virs baseina
+    pool_timeout=30     # pēc cik sekundēm mest TimeoutError, ja nav brīva savienojuma
+)
+
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 
 def save_entries_to_db(entries):
-    session = Session()
-    for entry in entries:
-        exists = session.query(Entry).filter_by(link=entry.get('link')).first()
-        if not exists:
-            db_entry = Entry(
-                title=entry.get('title'),
-                link=entry.get('link'),
-                published=entry.get('published'),
-                is_processed=False,
-                location=entry.get('location'),
-                building_type=entry.get('building_type'),
-                rooms=entry.get('rooms'),
-                floor=entry.get('floor'),
-                area=entry.get('area'),
-                price=entry.get('price'),
-                price_m2=entry.get('price_m2'),
-                street=entry.get('street'),
-                date_published=date.today(), # kad pirmais reizi parādās feedā
-                date_removed=None    # kad vairs nav feedā
-            )
-            session.add(db_entry)
-        else:
-            # Ja sludinājums bija atzīmēts kā "noņemts", bet tagad atkal redzams
-            if exists.date_removed is not None:
-                exists.date_removed = None
+    with Session() as session:
+      for entry in entries:
+          exists = session.query(Entry).filter_by(link=entry.get('link')).first()
+          if not exists:
+              db_entry = Entry(
+                  title=entry.get('title'),
+                  link=entry.get('link'),
+                  published=entry.get('published'),
+                  is_processed=False,
+                  location=entry.get('location'),
+                  building_type=entry.get('building_type'),
+                  rooms=entry.get('rooms'),
+                  floor=entry.get('floor'),
+                  area=entry.get('area'),
+                  price=entry.get('price'),
+                  price_m2=entry.get('price_m2'),
+                  street=entry.get('street'),
+                  date_published=date.today(), # kad pirmais reizi parādās feedā
+                  date_removed=None    # kad vairs nav feedā
+              )
+              session.add(db_entry)
+          else:
+              # Ja sludinājums bija atzīmēts kā "noņemts", bet tagad atkal redzams
+              if exists.date_removed is not None:
+                  exists.date_removed = None
 
-    try:
-        session.commit()
-    except IntegrityError:
-        session.rollback()
-        
-    session.close()
+      try:
+          session.commit()
+      except IntegrityError:
+          session.rollback()
+
