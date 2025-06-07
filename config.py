@@ -1,6 +1,7 @@
 import os
-from dotenv import load_dotenv
 import json
+import sys
+from dotenv import load_dotenv
 from logger import logger
 
 def is_running_in_docker():
@@ -34,21 +35,30 @@ def get_database_path():
     return db_path
 
 def get_all_rss_urls():
-    urls = []
     file_path = os.getenv("SS_RSS_URLS_FILE")
     if not file_path:
-        raise ValueError("[conf] Missing SS_RSS_URLS_FILE in environment")
-    with open(file_path, "r", encoding="utf-8") as f:
-        urls = json.load(f)
-        if not isinstance(urls, list) or not all(isinstance(u, str) for u in urls):
-          raise ValueError(f"Invalid format in {file_path}: expected list of strings")
+        raise ValueError("[config] Missing SS_RSS_URLS_FILE in environment")
     
-        logger.info(f"[config] Loaded {len(urls)} RSS URLs from file {file_path}:")
-        for url in urls:
-            url = url.strip()
-            if url:
-                logger.info(f" → {url}")
-        return url
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            urls = json.load(f)
+    except Exception as e:
+        raise RuntimeError(f"[config] Failed to load RSS URLs from {file_path}: {e}")
+    
+    if not isinstance(urls, list) or not all(isinstance(u, str) for u in urls):
+        raise ValueError(f"[config] Invalid format in {file_path}: expected list of strings")
+
+    urls = [u.strip() for u in urls if u.strip()]
+
+    if not urls:
+        logger.error(f"[config] RSS URL list in {file_path} is empty. Terminating.")
+        sys.exit(1)
+
+    logger.info(f"[config] Loaded {len(urls)} RSS URLs from {file_path}:")
+    for url in urls:
+        logger.info(f" → {url}")
+
+    return urls
 
 def get_bool_from_env(var_name, default=False):
     val = os.getenv(var_name, str(default)).strip().lower()
