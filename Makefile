@@ -30,7 +30,7 @@ update:
 
 # Build Docker konteinerus
 build:
-	@docker compose --build
+	@docker compose build
 	@echo "🚀 Docker containers built"
 
 # Start Docker konteinerus

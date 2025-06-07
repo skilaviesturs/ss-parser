@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import json
 from logger import logger
 
 def is_running_in_docker():
@@ -34,16 +35,20 @@ def get_database_path():
 
 def get_all_rss_urls():
     urls = []
-    index = 1
-    while True:
-        key = f'SS_RSS_URL_{index}'
-        url = os.getenv(key)
-        if not url:
-            break
-        logger.info(f"[conf] Found RSS feed: {key} = {url}")
-        urls.append(url.strip())
-        index += 1
-    return urls
+    file_path = os.getenv("SS_RSS_URLS_FILE")
+    if not file_path:
+        raise ValueError("[conf] Missing SS_RSS_URLS_FILE in environment")
+    with open(file_path, "r", encoding="utf-8") as f:
+        urls = json.load(f)
+        if not isinstance(urls, list) or not all(isinstance(u, str) for u in urls):
+          raise ValueError(f"Invalid format in {file_path}: expected list of strings")
+    
+        logger.info(f"[config] Loaded {len(urls)} RSS URLs from file {file_path}:")
+        for url in urls:
+            url = url.strip()
+            if url:
+                logger.info(f" → {url}")
+        return url
 
 def get_bool_from_env(var_name, default=False):
     val = os.getenv(var_name, str(default)).strip().lower()
