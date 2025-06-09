@@ -27,7 +27,7 @@ async def handle_monitor_list(update: Update, context: ContextTypes.DEFAULT_TYPE
             msg = f"<b>{title}</b>\n{body}\n{link if link else ''}"
 
             keyboard = InlineKeyboardMarkup([
-                [InlineKeyboardButton("❌  Atteikties no monitoringa", callback_data=f"unmonitor:{flat.hash}")]
+                [InlineKeyboardButton("❌  izbeigt monitoringu", callback_data=f"unmonitor:{flat.hash}")]
             ])
 
             await update.message.reply_text(
