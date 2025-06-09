@@ -28,7 +28,6 @@ def run_parser():
                       published=entry.get('published'),
                       is_processed=False,
                       date_published=today,
-                      date_removed=None
                   )
                   session.add(db_entry)
                   new_count += 1

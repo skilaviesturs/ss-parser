@@ -56,13 +56,8 @@ def save_entries_to_db(entries):
                   price_m2=entry.get('price_m2'),
                   street=entry.get('street'),
                   date_published=date.today(), # kad pirmais reizi parādās feedā
-                  date_removed=None    # kad vairs nav feedā
               )
               session.add(db_entry)
-          else:
-              # Ja sludinājums bija atzīmēts kā "noņemts", bet tagad atkal redzams
-              if exists.date_removed is not None:
-                  exists.date_removed = None
 
       try:
           session.commit()
