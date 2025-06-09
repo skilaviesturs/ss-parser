@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from logger import logger
+from lib.logger import logger
 import random
 
 USER_AGENTS = [

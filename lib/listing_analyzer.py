@@ -1,5 +1,5 @@
-import config
-from logger import logger
+import lib.config as config
+from lib.logger import logger
 
 def extract_listing_data(soup):
     data = {

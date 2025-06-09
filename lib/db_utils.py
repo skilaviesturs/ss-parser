@@ -1,8 +1,8 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, Date
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, Date, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import sessionmaker
-from config import DATABASE_PATH
+from sqlalchemy.orm import sessionmaker, relationship
+from lib.config import DATABASE_PATH
 from datetime import date
 
 Base = declarative_base()
@@ -26,6 +26,32 @@ class Entry(Base):
     price = Column(Integer, nullable=True)
     price_m2 = Column(Float, nullable=True)
     date_published = Column(Date, nullable=True)
+    hash = Column(String, nullable=True, index=True)
+
+class MonitoredFlat(Base):
+    __tablename__ = 'monitored_flats'
+
+    hash = Column(String, primary_key=True)
+    location = Column(String)
+    region = Column(String)
+    street = Column(String)
+    building_type = Column(String)
+    rooms = Column(Integer)
+    floor = Column(Integer)
+    area = Column(Float)
+    link = Column(String)
+    price = Column(Integer)
+    created_at = Column(Date, default=date.today)
+
+class FlatPriceHistory(Base):
+    __tablename__ = 'flat_price_history'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    flat_hash = Column(String, ForeignKey('monitored_flats.hash'))
+    date = Column(Date, default=date.today)
+    price = Column(Integer)
+
+    flat = relationship("MonitoredFlat", backref="price_history")
 
 engine = create_engine(
     DATABASE_PATH,
@@ -56,6 +82,7 @@ def save_entries_to_db(entries):
                   price_m2=entry.get('price_m2'),
                   street=entry.get('street'),
                   date_published=date.today(), # kad pirmais reizi parādās feedā
+                  hash=entry.get('hash', None)  # ja ir hash, tad pievieno
               )
               session.add(db_entry)
 
@@ -64,3 +91,13 @@ def save_entries_to_db(entries):
       except IntegrityError:
           session.rollback()
 
+def update_price_history(session, flat: MonitoredFlat, new_price: int):
+    # Tikai ja cena ir mainījusies
+    if flat.price != new_price:
+        flat.price = new_price
+        history_entry = FlatPriceHistory(
+            flat_hash=flat.hash,
+            date=date.today(),
+            price=new_price
+        )
+        session.add(history_entry)

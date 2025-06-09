@@ -2,7 +2,7 @@ import os
 import json
 import sys
 from dotenv import load_dotenv
-from logger import logger
+from lib.logger import logger
 
 def is_running_in_docker():
     try:

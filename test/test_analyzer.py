@@ -1,8 +1,8 @@
-import web_utils
-import listing_analyzer
+import lib.web_utils as web_utils
+import lib.listing_analyzer as listing_analyzer
 import sys
-import notifier
-from notifier import generate_title
+import lib.notifier as notifier
+from lib.notifier import generate_title
 
 def test_listing(url):
     soup = web_utils.fetch_and_parse(url)
