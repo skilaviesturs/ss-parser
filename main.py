@@ -6,6 +6,7 @@ from telegram.ext import ApplicationBuilder, CallbackQueryHandler, CommandHandle
 from lib.logger import logger
 from lib.parser_main import run_parser
 from lib.notifier_telegram import set_telegram_context
+from lib.handle_help import handle_help
 from lib.handle_monitor_callback import handle_monitor_callback
 from lib.handle_monitor_list import handle_monitor_list
 from lib.handle_unmonitor_callback import handle_unmonitor_callback
@@ -54,8 +55,9 @@ async def async_main():
         if TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
             telegram_app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
             set_telegram_context(telegram_app.bot, telegram_app)
+            telegram_app.add_handler(CommandHandler("help", handle_help))
             telegram_app.add_handler(CallbackQueryHandler(handle_monitor_callback, pattern=r"^monitor:"))
-            telegram_app.add_handler(CommandHandler("stat", handle_monitor_list))
+            telegram_app.add_handler(CommandHandler("list", handle_monitor_list))
             telegram_app.add_handler(CallbackQueryHandler(handle_unmonitor_callback, pattern=r"^unmonitor:"))
             logger.info("[bot] ✅ Telegram bot initialized, command and callback handlers registered.")
 
