@@ -4,3 +4,4 @@ __pycache__/
 ss_entries.db
 .env
 data/*.db
+rss_urls*
