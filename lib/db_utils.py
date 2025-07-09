@@ -41,6 +41,7 @@ class MonitoredFlat(Base):
     area = Column(Float)
     link = Column(String)
     price = Column(Integer)
+    price_m2 = Column(Float)
     created_at = Column(Date, default=date.today)
 
 class FlatPriceHistory(Base):

@@ -35,6 +35,7 @@ async def handle_monitor_callback(update: Update, context: ContextTypes.DEFAULT_
                   area=entry.area,
                   link=entry.link,
                   price=entry.price,
+                  price_m2=entry.price_m2,
               )
               session.add(monitored)
               session.commit()
