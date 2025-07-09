@@ -20,7 +20,7 @@ async def handle_monitor_list(update: Update, context: ContextTypes.DEFAULT_TYPE
                 f"{flat.floor}. stāvs" if flat.floor else None,
                 f"{flat.area} m²" if flat.area else None,
                 f"{flat.price} €" if flat.price else None,
-                f"{flat.price_m2} €/m²)" if flat.price_m2 else None,
+                f"({flat.price_m2} €/m²)" if flat.price_m2 else None,
             ]
             body = ', '.join(filter(None, body_parts))
             link = f"\n<a href='{flat.link}'>✅  Skatīt sludinājumu</a>"

@@ -23,6 +23,13 @@ async def handle_monitor_callback(update: Update, context: ContextTypes.DEFAULT_
                   await query.message.reply_text("❌ Dzīvokļa dati nav atrasti.")
                   await query.edit_message_reply_markup(reply_markup=None)
                   return
+              
+              # Ja price_m2 nav pieejams, aprēķinam to
+              if entry.price_m2 is None and entry.area and entry.price:
+                  try:
+                      entry.price_m2 = round(entry.price / entry.area, 2)
+                  except ZeroDivisionError:
+                      entry.price_m2 = None
 
               monitored = MonitoredFlat(
                   hash=entry.hash,
